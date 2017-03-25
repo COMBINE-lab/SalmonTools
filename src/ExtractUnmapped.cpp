@@ -11,6 +11,17 @@
 //  if (ms == MappedState::UNMAPPED)
 //}
 
+// from http://stackoverflow.com/questions/9435385/split-a-string-using-c11
+std::vector<std::string> tokenize(const std::string &s, char delim) {
+  std::stringstream ss(s);
+  std::string item;
+  std::vector<std::string> elems;
+  while (std::getline(ss, item, delim)) {
+    elems.push_back(item);
+  }
+  return elems;
+}
+
 void ExtractUnmapped(const std::string &progname, std::vector<std::string>::const_iterator beginargs, std::vector<std::string>::const_iterator endargs) {
     args::ArgumentParser parser("");
     parser.Prog(progname + " extract-unmapped");
@@ -79,7 +90,10 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
         if (singleReads) {
           auto outName = args::get(outFile);
           std::ofstream out(outName + ".fa");
-          std::vector<std::string> files{args::get(singleReads)};
+
+          auto readNames = args::get(singleReads);
+          std::vector<std::string> files = tokenize(readNames, ',');
+
           fastx_parser::FastxParser<fastx_parser::ReadSeq> parser(files, 1, 1);
           parser.start();
           // Get the read group by which this thread will
@@ -99,8 +113,11 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
           auto outName = args::get(outFile);
           std::ofstream outLeft(outName + "_1.fa");
           std::ofstream outRight(outName + "_2.fa");
-          std::vector<std::string> files1{args::get(leftReads)};
-          std::vector<std::string> files2{args::get(rightReads)};
+
+          auto readNamesLeft = args::get(leftReads);
+          auto readNamesRight= args::get(rightReads);
+          std::vector<std::string> files1 = tokenize(readNamesLeft, ',');
+          std::vector<std::string> files2 = tokenize(readNamesRight, ',');
           fastx_parser::FastxParser<fastx_parser::ReadPair> parser(files1, files2, 1, 1);
           parser.start();
 
