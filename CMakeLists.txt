@@ -141,6 +141,11 @@ endif()
 
 include(ExternalProject)
 
+find_package (ZLIB)
+if (NOT ZLIB_FOUND)
+	message (FATAL_ERROR "zlib must be installed before configuration & building can proceed")
+endif()
+
 ##
 #  Update the CXX flags according to the system and compiler
 ##

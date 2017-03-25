@@ -7,7 +7,11 @@ set ( SALMON_TOOLS_MAIN_SRCS
 SalmonTools.cpp
 )
 
-#set (SALMON_TOOLS_LIB_SRCS)
+set (SALMON_TOOLS_LIB_SRCS
+FastxParser.cpp
+ExtractUnmapped.cpp
+)
+
 #set ( UNIT_TESTS_SRCS
 #    ${GAT_SOURCE_DIR}/tests/UnitTests.cpp
 #    FragmentLengthDistribution.cpp
@@ -41,8 +45,7 @@ else()
 endif()
 
 # Build the SalmonTools library
-# add_library(salmon_core STATIC ${SALMON_LIB_SRCS} )
-
+ add_library(salmon_tools_core STATIC ${SALMON_TOOLS_LIB_SRCS} )
 
 # Build the salmon executable
 add_executable(salmontools ${SALMON_TOOLS_MAIN_SRCS})
@@ -51,7 +54,7 @@ add_executable(salmontools ${SALMON_TOOLS_MAIN_SRCS})
 
 # Link the executable
 target_link_libraries(salmontools
-    #salmon_core
+    salmon_tools_core
     #gff
     ${PTHREAD_LIB}
     ${ZLIB_LIBRARY}
