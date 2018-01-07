@@ -161,9 +161,9 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
 	      const char *opLeft = bufLeft.c_str() ;
 	      const char *opRight = bufRight.c_str() ;
 	      std::streamsize toCopyLeft = bufLeft.size() ;
-	      std::streamsize toCopyRight = bufLeft.size() ;
+	      std::streamsize toCopyRight = bufRight.size() ;
 	      outLeft->write(opLeft, toCopyLeft) ;
-	      outLeft->write(opRight, toCopyRight) ;
+	      outRight->write(opRight, toCopyRight) ;
 	      
             }
           }
