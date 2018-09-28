@@ -1,10 +1,12 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <functional>
 
 #include "FastxParser.hpp"
 #include "sparsepp/spp.h"
 #include "args.hpp"
+#include "zstr.hpp"
 
 //enum class MappedState : uint8_t {UNMAPPED, LEFT_MAPPED, RIGHT_MAPPED, BOTH_MAPPED};
 //inline std::ostream& operator<<(std::ostream & os, MappedState & ms) {
@@ -89,7 +91,12 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
         std::cerr << "There were " << targetReads.size() << " unmapped reads\n";
         if (singleReads) {
           auto outName = args::get(outFile);
-          std::ofstream out(outName + ".fa");
+          
+	  //std::ofstream out(outName + ".fa.gz");
+	std::unique_ptr<std::ostream> out = 
+				std::unique_ptr<std::ostream> (new zstr::ofstream(outName+".fa.gz")) ;
+
+	 
 
           auto readNames = args::get(singleReads);
           std::vector<std::string> files = tokenize(readNames, ',');
@@ -103,16 +110,28 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
             // Here, rg will contain a chunk of read pairs we can process.
             for (auto& r : rg) {
               auto targetIt = targetReads.find(r.name);
+	      std::stringstream ss ; 
+	      //std::string buff(">"+r.name+" "+targetIt->second+"\n"+r.seq+"\n") ;
               if (targetIt != targetReads.end()) {
-                out << '>'  << r.name << ' ' << targetIt->second << '\n' << r.seq << '\n';
+                ss << '>'  << r.name << ' ' << targetIt->second << '\n' << r.seq << '\n';
               }
+	      std::string buf = ss.str();
+	      const char *op = buf.c_str() ;
+	      std::streamsize toCopy = buf.size() ;
+	      out->write(op,toCopy) ;
             }
           }
-          out.close();
+          //out.close();
         } else {
           auto outName = args::get(outFile);
-          std::ofstream outLeft(outName + "_1.fa");
-          std::ofstream outRight(outName + "_2.fa");
+          //std::ofstream outLeft(outName + "_1.fa.gz");
+          //std::ofstream outRight(outName + "_2.fa.gz");
+	std::unique_ptr<std::ostream> outLeft = 
+				std::unique_ptr<std::ostream> (new zstr::ofstream(outName+"_1.fa.gz")) ;
+	std::unique_ptr<std::ostream> outRight = 
+				std::unique_ptr<std::ostream> (new zstr::ofstream(outName+"_2.fa.gz")) ;
+
+
 
           auto readNamesLeft = args::get(leftReads);
           auto readNamesRight= args::get(rightReads);
@@ -130,14 +149,26 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
               auto& r1 = rp.first;
               auto& r2 = rp.second;
               auto targetIt = targetReads.find(r1.name);
+	      std::stringstream ssLeft ;
+	      std::stringstream ssRight ;
               if (targetIt != targetReads.end()) {
-                outLeft << '>' << rp.first.name << ' ' << targetIt->second << '\n' << rp.first.seq << '\n';
-                outRight << '>' << rp.second.name << ' ' << targetIt->second << '\n' << rp.second.seq << '\n';
+                ssLeft << '>' << rp.first.name << ' ' << targetIt->second << '\n' << rp.first.seq << '\n';
+                ssRight << '>' << rp.second.name << ' ' << targetIt->second << '\n' << rp.second.seq << '\n';
               }
+
+	      std::string bufLeft = ssLeft.str();
+	      std::string bufRight = ssRight.str();
+	      const char *opLeft = bufLeft.c_str() ;
+	      const char *opRight = bufRight.c_str() ;
+	      std::streamsize toCopyLeft = bufLeft.size() ;
+	      std::streamsize toCopyRight = bufRight.size() ;
+	      outLeft->write(opLeft, toCopyLeft) ;
+	      outRight->write(opRight, toCopyRight) ;
+	      
             }
           }
-          outLeft.close();
-          outRight.close();
+          //outLeft.close();
+          //outRight.close();
         }
     }
     catch (args::Help)
