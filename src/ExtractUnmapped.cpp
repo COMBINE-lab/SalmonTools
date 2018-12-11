@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <functional>
+#include <sys/stat.h>
 
 #include "FastxParser.hpp"
 #include "sparsepp/spp.h"
@@ -13,6 +14,19 @@
 //  if (ms == MappedState::UNMAPPED)
 //}
 
+
+std::string SplitFilename (const std::string& str)
+{
+  size_t found;
+  //cout << "Splitting: " << str << endl;
+  found=str.find_last_of("/\\");
+  return str.substr(0, found) ;
+  //cout << " folder: " << str.substr(0,found) << endl;
+  //cout << " file: " << str.substr(found+1) << endl;
+}
+
+
+
 // from http://stackoverflow.com/questions/9435385/split-a-string-using-c11
 std::vector<std::string> tokenize(const std::string &s, char delim) {
   std::stringstream ss(s);
@@ -23,6 +37,21 @@ std::vector<std::string> tokenize(const std::string &s, char delim) {
   }
   return elems;
 }
+
+// Taken from
+// http://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
+bool DirExists(const char* path) {
+  struct stat fileStat;
+  if (stat(path, &fileStat)) {
+    return false;
+  }
+  if (!S_ISDIR(fileStat.st_mode)) {
+    return false;
+  }
+  return true;
+}
+
+void MakeDir(const char* path) { mkdir(path, ACCESSPERMS); }
 
 void ExtractUnmapped(const std::string &progname, std::vector<std::string>::const_iterator beginargs, std::vector<std::string>::const_iterator endargs) {
     args::ArgumentParser parser("");
@@ -89,8 +118,16 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
         }
         uf.close();
         std::cerr << "There were " << targetReads.size() << " unmapped reads\n";
+        
+
+        auto outName = args::get(outFile);
+        auto folderName = SplitFilename(outName) ;
+
+        if(!DirExists(folderName.c_str())){
+          MakeDir(folderName.c_str()) ;
+        }
+
         if (singleReads) {
-          auto outName = args::get(outFile);
           
 	  //std::ofstream out(outName + ".fa.gz");
 	std::unique_ptr<std::ostream> out = 
@@ -123,7 +160,6 @@ void ExtractUnmapped(const std::string &progname, std::vector<std::string>::cons
           }
           //out.close();
         } else {
-          auto outName = args::get(outFile);
           //std::ofstream outLeft(outName + "_1.fa.gz");
           //std::ofstream outRight(outName + "_2.fa.gz");
 	std::unique_ptr<std::ostream> outLeft = 
