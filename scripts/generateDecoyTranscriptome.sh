@@ -40,10 +40,10 @@ echo "*** getDecoy ***"
 echo "****************"
 while getopts ":a:b:o:j:h:g:t:m:" opt; do
     case $opt in
-	    b)
-	        echo "-b <bedtools binary> = $OPTARG"
-	        bedtools="$OPTARG"
-	        ;;
+        b)
+            echo "-b <bedtools binary> = $OPTARG"
+            bedtools="$OPTARG"
+            ;;
         m)
             echo "-m <mashmap binary> = $OPTARG"
             mashmap="$OPTARG"
@@ -60,11 +60,11 @@ while getopts ":a:b:o:j:h:g:t:m:" opt; do
             echo "-j <Concurrency level> = $OPTARG"
             threads="$OPTARG"
             ;;
-	    g)
+        g)
             echo "-g <Genome fasta> = $OPTARG"
             genomefile="$OPTARG"
             ;;
-	    t)
+        t)
             echo "-t <Transcriptome fasta> = $OPTARG"
             txpfile="$OPTARG"
             ;;
