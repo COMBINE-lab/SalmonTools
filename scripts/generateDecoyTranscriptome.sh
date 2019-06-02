@@ -41,32 +41,32 @@ echo "****************"
 while getopts ":a:b:o:j:h:g:t:m:" opt; do
     case $opt in
         b)
-            echo "-b <bedtools binary> = $OPTARG"
-            bedtools="$OPTARG"
+            bedtools=`realpath $OPTARG`
+            echo "-b <bedtools binary> = $bedtools"
             ;;
         m)
-            echo "-m <mashmap binary> = $OPTARG"
-            mashmap="$OPTARG"
+            mashmap=`realpath $OPTARG`
+            echo "-b <bedtools binary> = $mashmap"
             ;;
         a)
-            echo "-a <Annotation GTF file> = $OPTARG"
-            gtffile="$OPTARG"
+            gtffile=`realpath $OPTARG`
+            echo "-b <bedtools binary> = $gtffile"
             ;;
         o)
-            echo "-o <Output files Path> = $OPTARG"
             outfolder="$OPTARG"
+            echo "-b <bedtools binary> = $outfolder"
             ;;
         j)
-            echo "-j <Concurrency level> = $OPTARG"
             threads="$OPTARG"
+            echo "-b <bedtools binary> = $threads"
             ;;
         g)
-            echo "-g <Genome fasta> = $OPTARG"
-            genomefile="$OPTARG"
+            genomefile=`realpath $OPTARG`
+            echo "-b <bedtools binary> = $genomefile"
             ;;
         t)
-            echo "-t <Transcriptome fasta> = $OPTARG"
-            txpfile="$OPTARG"
+            txpfile=`realpath $OPTARG`
+            echo "-b <bedtools binary> = $txpfile"
             ;;
         h)
             print_usage_and_exit
