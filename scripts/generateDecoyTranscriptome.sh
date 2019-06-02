@@ -46,27 +46,27 @@ while getopts ":a:b:o:j:h:g:t:m:" opt; do
             ;;
         m)
             mashmap=`realpath $OPTARG`
-            echo "-b <bedtools binary> = $mashmap"
+            echo "-m <mashmap binary> = $mashmap"
             ;;
         a)
             gtffile=`realpath $OPTARG`
-            echo "-b <bedtools binary> = $gtffile"
+            echo "-a <Annotation GTF file> = $gtffile"
             ;;
         o)
             outfolder="$OPTARG"
-            echo "-b <bedtools binary> = $outfolder"
+            echo "-o <Output files Path> = $outfolder"
             ;;
         j)
             threads="$OPTARG"
-            echo "-b <bedtools binary> = $threads"
+            echo "-j <Concurrency level> = $threads"
             ;;
         g)
             genomefile=`realpath $OPTARG`
-            echo "-b <bedtools binary> = $genomefile"
+            echo "-g <Genome fasta> = $genomefile"
             ;;
         t)
             txpfile=`realpath $OPTARG`
-            echo "-b <bedtools binary> = $txpfile"
+            echo "-t <Transcriptome fasta> = $txpfile"
             ;;
         h)
             print_usage_and_exit
