@@ -31,7 +31,7 @@ mashmap="mashmap"
 
 # Argument Parsing
 print_usage_and_exit () {
-    echo "Usage: $0 [-j <N>] [-b <bedtools binary path>] [-m <mashmap binary path>] -a <gtf file> -g <genome fasta> -t <txome fasta> -o <output path>"
+    echo "Usage: $0 [-j <N> =1 default] [-b <bedtools binary path> =bedtools default] [-m <mashmap binary path> =mashmap default] -a <gtf file> -g <genome fasta> -t <txome fasta> -o <output path>"
     exit 1
 }
 
